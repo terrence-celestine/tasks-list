@@ -29,6 +29,25 @@ app.get("/api/tasks", async (_req: Request, res: Response) => {
     }
 })
 
+app.delete("/api/tasks/:id", async (req:Request, res: Response) => {
+    const { id } = req.params;
+    
+    try {
+        const query = "DELETE FROM tasks WHERE id = $1 RETURNING *";
+        const result = await pool.query(query, [id]);
+
+        if (result.rowCount === 0){
+            return res.status(404).json({ error: "Task not found"})
+        }
+        res.status(200).json({
+            message: 'Task deleted successfully'
+        });
+    } catch (err) {
+        res.status(500).json({ error: "Failed to delete task"})
+    }
+})
+
+
 app.post("/api/tasks", async (req:Request, res: Response) => {
     const { title } = req.body;
     
