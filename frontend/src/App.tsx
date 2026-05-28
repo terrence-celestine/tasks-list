@@ -7,7 +7,8 @@ const App = () => {
   const [tasks, setTasks] = useState<Task[]>([])
   const [loading, setLoading] = useState<boolean>(true)
   const [taskTitle, setTaskTitle] = useState<string>("")
-  
+  const [hasError, setHasError] = useState<boolean>(false);
+
   const fetchTasks = async (): Promise<Task[]> => {
     const response = await fetch("http://localhost:3000/api/tasks");
 
@@ -20,7 +21,9 @@ const App = () => {
   }
 
   const addTask = async (): Promise<void> => {
-    if (!taskTitle.trim()) return;
+    if (!taskTitle.trim()) {
+      setHasError(true);
+    }
     const response = await fetch("http://localhost:3000/api/tasks", {
       method: "POST",
       headers: { "Content-Type": "application/json"},
@@ -36,7 +39,8 @@ const App = () => {
 
   const updateTaskTitle = (event: ChangeEvent<HTMLInputElement>) => {
     const value = event.target.value;
-    setTaskTitle(value)
+    const trimmedTask = value.trim();
+    setTaskTitle(trimmedTask)
   }
 
   useEffect(() => {
@@ -61,6 +65,7 @@ const App = () => {
           <button onClick={addTask}>
             Add task
           </button>
+          {hasError && <p>Please enter a task</p>}
         </div>
     </>
   )
