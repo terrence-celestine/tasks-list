@@ -7,7 +7,7 @@ const App = () => {
   const [tasks, setTasks] = useState<Task[]>([])
   const [loading, setLoading] = useState<boolean>(true)
   const [taskTitle, setTaskTitle] = useState<string>("")
-
+  
   const fetchTasks = async (): Promise<Task[]> => {
     const response = await fetch("http://localhost:3000/api/tasks");
 
@@ -20,11 +20,11 @@ const App = () => {
   }
 
   const addTask = async (): Promise<void> => {
-    console.log("add task")
+    if (!taskTitle.trim()) return;
     const response = await fetch("http://localhost:3000/api/tasks", {
       method: "POST",
       headers: { "Content-Type": "application/json"},
-      body: JSON.stringify({ taskTitle, is_completed: false})
+      body: JSON.stringify({ title: taskTitle, is_completed: false})
     });  
 
     if (!response.ok) throw new Error("Failed to create task");
@@ -46,9 +46,9 @@ const App = () => {
         setLoading(false);
       })
     }
-  })
+  }, [])
 
-  if (loading) return <div><h1>Loading tasks....</h1></div>
+  if (loading) return <h1>Loading tasks....</h1>
   
   return (
     <>
@@ -57,7 +57,7 @@ const App = () => {
         {tasks.map((task) => <li key={task.id}>{task.title}</li>)}
         </ul> : <p>No tasks found</p>}
         <div>
-          <input type="text" placeholder="Enter a task title" onChange={updateTaskTitle} />
+          <input type="text" placeholder="Enter a task title" onChange={updateTaskTitle} value={taskTitle} />
           <button onClick={addTask}>
             Add task
           </button>

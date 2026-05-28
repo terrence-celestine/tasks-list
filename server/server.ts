@@ -30,11 +30,11 @@ app.get("/api/tasks", async (_req: Request, res: Response) => {
 })
 
 app.post("/api/tasks", async (req:Request, res: Response) => {
-    const { taskTitle } = req.body;
+    const { title } = req.body;
     
     try {
         const query = "INSERT INTO tasks (title, is_completed) VALUES ($1, $2) RETURNING *";
-        const result = await pool.query(query, [taskTitle, false]);
+        const result = await pool.query(query, [title, false]);
 
         res.status(201).json(result.rows[0]);
     } catch (err) {
