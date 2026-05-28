@@ -51,14 +51,16 @@ app.delete("/api/tasks/:id", async (req:Request, res: Response) => {
 app.post("/api/tasks", async (req:Request, res: Response) => {
     const { title } = req.body;
     if (typeof title !== "string" || title.trim().length === 0){
-        res.status(400).json({ error: "Title is required"})
+        return res.status(400).json({ error: "Title is required"})
     }
+    const cleanTitle = title.trim();
     try {
         const query = "INSERT INTO tasks (title, is_completed) VALUES ($1, $2) RETURNING *";
-        const result = await pool.query(query, [title, false]);
+        const result = await pool.query(query, [cleanTitle, false]);
 
         res.status(201).json(result.rows[0]);
     } catch (err) {
+        console.error(err)
         res.status(500).json({ error: "Failed to create task"})
     }
 })
