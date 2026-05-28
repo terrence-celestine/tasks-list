@@ -20,8 +20,8 @@ const Tasks = ({tasksList, setTasks}:TasksProps) => {
     return (
     <>
     {tasksList.length > 0 ? <div>
-        <h1>All Tasks</h1>
-        {tasksList.map((task) => <div key={task.id}>{task.title}<button type="button" onClick={() => deleteTask(task.id)}>Delete Task</button></div>)}
+        <h1>General</h1>
+        {tasksList.map((task) => <div key={task.id} className='task'>{task.title}<button type="button" onClick={() => deleteTask(task.id)}>Delete Task</button></div>)}
         </div> : <p>No tasks found, please add one using the field below.</p>}
     </>
   )
