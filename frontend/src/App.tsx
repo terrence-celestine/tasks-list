@@ -3,6 +3,9 @@ import './App.css'
 import type { Task } from './types/tasks'
 import type { ApiResponse } from './types/ApiResponse'
 import { API_URL } from './const'
+import Sidebar from './components/Sidebar'
+import Tasks from './components/Tasks'
+import AddTask from './components/AddTask'
 
 const App = () => {
   const [tasks, setTasks] = useState<Task[]>([])
@@ -51,20 +54,12 @@ const App = () => {
       setHasLoadingErr(false)
     }
     const value = event.target.value;
+    console.log(value)
     setTaskTitle(value)
   }
 
-  const deleteTask = async (id: number): Promise<void> => {
-    const response = await fetch(`${API_URL}/api/tasks/${id}`, {
-      method: "DELETE"
-    });
-
-    if (!response.ok) throw new Error("Failed to delete task");
-
-    setTasks(prev => prev.filter(task => task.id !== id));
-  }
-
   const checkSubmit = (event: KeyboardEvent<HTMLInputElement>) => {
+    console.log("chekc")
     if (event.key === "Enter"){
       addTask() 
     }
@@ -93,16 +88,15 @@ const App = () => {
   
   return (
     <>
-      <h1>Tasks List</h1>
-      {tasks.length > 0 ? <div>
-        {tasks.map((task) => <div key={task.id}>{task.title}<button type="button" onClick={() => deleteTask(task.id)}>Delete Task</button></div>)}
-        </div> : <p>No tasks found</p>}
+      <div id="App">
+        <Sidebar/>
+        <div id="tasks-container">
         <div>
-          <input type="text" placeholder="Enter a task title" onChange={updateTaskTitle} value={taskTitle} onKeyDown={checkSubmit}/>
-          <button onClick={addTask}>
-            Add task
-          </button>
+          <Tasks tasksList={tasks} setTasks={setTasks}/>
+          <AddTask taskTitle={taskTitle} updateTaskTitle={updateTaskTitle} addTask={addTask} checkSubmit={checkSubmit}/>
           {hasError && <p>Please enter a task</p>}
+          </div>
+          </div>
         </div>
     </>
   )
