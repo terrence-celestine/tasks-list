@@ -54,6 +54,9 @@ app.post("/api/tasks", async (req:Request, res: Response) => {
         return res.status(400).json({ error: "Title is required"})
     }
     const cleanTitle = title.trim();
+    if (title.length > 200){
+        return res.status(400).json({ error: "Title is too long"})
+    }
     try {
         const query = "INSERT INTO tasks (title, is_completed) VALUES ($1, $2) RETURNING *";
         const result = await pool.query(query, [cleanTitle, false]);
